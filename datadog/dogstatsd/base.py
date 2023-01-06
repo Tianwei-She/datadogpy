@@ -534,8 +534,10 @@ class DogStatsd(object):
 
     @classmethod
     def _get_udp_socket(cls, host, port):
-
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        if is_ipv6_hostname(host):
+            sock = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
+        else:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.setblocking(0)
         cls._ensure_min_send_buffer_size(sock)
         sock.connect((host, port))
